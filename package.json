@@ -31,7 +31,7 @@
       "target": "NSIS",
       "icon": "asset/photos/icon.ico"
     },
-    "NSIS": {
+    "nsis": {
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true
