@@ -61,6 +61,7 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+    autoUpdater.quitAndInstall();
   }
 });
 
@@ -138,7 +139,7 @@ ipc.on("generate_battery_info", () => {
 autoUpdater.autoDownload = false;
 
 ipc.on("check_for_update", () => {
-  autoUpdater.checkForUpdates();
+  autoUpdater.checkForUpdatesAndNotify();
 });
 
 autoUpdater.on("update-available", (info) => {
@@ -146,4 +147,28 @@ autoUpdater.on("update-available", (info) => {
     updateVersion: info.releaseName,
     releaseDate: info.releaseDate,
   });
+});
+
+autoUpdater.on("update-not-available", () => {
+  win.webContents.send("no_update_available");
+});
+
+autoUpdater.on("download-progress", (progressObj) => {
+  win.webContents.send("download_progress", {
+    percent: progressObj.percent,
+    size: progressObj.total,
+    speed: progressObj.bytesPerSecond,
+  });
+});
+
+autoUpdater.on("update-downloaded", () => {
+  win.webContents.send("update_downloaded");
+});
+
+ipc.on("download_update", () => {
+  autoUpdater.downloadUpdate();
+});
+
+ipc.on("restart_the_app", () => {
+  autoUpdater.quitAndInstall();
 });

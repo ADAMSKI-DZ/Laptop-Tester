@@ -949,7 +949,6 @@ td.part img {
 }
 .download-progress {
   stroke: var(--light-green);
-  stroke-dashoffset: calc(440 - (375 * 80) / 100) !important;
 }
 .progress-circle .number {
   position: absolute;
