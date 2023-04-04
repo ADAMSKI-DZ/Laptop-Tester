@@ -1,7 +1,13 @@
 console.time("app_startup_time");
 
 /*------ Importing electron and some other things------*/
-const { app, BrowserWindow, ipcMain } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Notification,
+  webContents,
+} = require("electron");
 const path = require("path");
 const ipc = ipcMain;
 const os = require("os");
@@ -139,7 +145,7 @@ ipc.on("generate_battery_info", () => {
 autoUpdater.autoDownload = false;
 
 ipc.on("check_for_update", () => {
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdates();
 });
 
 autoUpdater.on("update-available", (info) => {
@@ -170,5 +176,5 @@ ipc.on("download_update", () => {
 });
 
 ipc.on("restart_the_app", () => {
-  autoUpdater.quitAndInstall();
+  autoUpdater.quitAndInstall(true);
 });
