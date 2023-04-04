@@ -8,6 +8,8 @@ const updateReleaseDate = document.querySelector(".update-release-date");
 const restartBtn = document.querySelector(".restart");
 const UpdateBackBtn = document.querySelector(".back-btn");
 
+/* update system */
+
 const appVersionText = document.querySelectorAll(".app-version span");
 
 ipc.on("app_version", (event, data) => {
