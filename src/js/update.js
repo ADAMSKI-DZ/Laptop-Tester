@@ -59,6 +59,14 @@ const updateReleaseDate = document.querySelector(".update-release-date span");
 ipc.on("update_available", (event, data) => {
   console.log("there is available update");
 
+  const updateAvailableNoti = new Notification("🔥 New update is here 🔥", {
+    body: `Version ${data.updateVersion} is here click to download it 👉`,
+    icon: "../asset/photos/icon.ico",
+  });
+  updateAvailableNoti.onclick = () => {
+    ipc.send("download_update");
+  };
+
   updateStage.forEach((stage) => {
     stage.classList.remove("active");
   });
@@ -100,6 +108,18 @@ ipc.on("download_progress", (event, data) => {
 
 ipc.on("update_downloaded", () => {
   console.log("update downloaded");
+
+  const updateDownloadedNoti = new Notification(
+    "✅ The updated has been downloaded ✅",
+    {
+      body: "Click to install the update and restart the app 👉",
+      icon: "../asset/photos/icon.ico",
+    }
+  );
+  updateDownloadedNoti.onclick = () => {
+    ipc.send("restart_the_app");
+  };
+
   updateStage.forEach((stage) => {
     stage.classList.remove("active");
   });

@@ -1,13 +1,7 @@
 console.time("app_startup_time");
 
 /*------ Importing electron and some other things------*/
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  Notification,
-  webContents,
-} = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const ipc = ipcMain;
 const os = require("os");
@@ -59,6 +53,7 @@ app.whenReady().then(() => {
   });
   setTimeout(() => {
     win.loadFile("./src/index.html");
+    autoUpdater.checkForUpdates();
   }, 1000);
   console.timeEnd("app_startup_time");
 });
@@ -176,5 +171,5 @@ ipc.on("download_update", () => {
 });
 
 ipc.on("restart_the_app", () => {
-  autoUpdater.quitAndInstall(true);
+  autoUpdater.quitAndInstall(true, true);
 });
