@@ -1,7 +1,7 @@
 console.time("app_startup_time");
 
 /*------ Importing electron and some other things------*/
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain , shell } = require("electron");
 const path = require("path");
 const ipc = ipcMain;
 const os = require("os");
@@ -189,3 +189,7 @@ ipc.on("download_update", () => {
 ipc.on("restart_the_app", () => {
   autoUpdater.quitAndInstall(true, true);
 });
+
+
+
+

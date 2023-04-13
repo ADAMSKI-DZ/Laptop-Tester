@@ -1,5 +1,5 @@
 /*------ Importing ipc ------*/
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const ipc = ipcRenderer;
 
 /*------ Adding close / minimize / maximize functions ------*/
@@ -95,4 +95,35 @@ video1.addEventListener("click", () => {
 });
 video2.addEventListener("click", () => {
   ipc.send("start_video2");
+});
+
+
+
+/*------ Open links in browser ------*/
+const socialLinksMainBtns = document.querySelectorAll(".social-link");
+const mainSocialAll = [
+  "https://www.instagram.com/malick_tammal",
+  "https://laptop-tester.netlify.app",
+  "https://www.facebook.com/abdelmalek.tammal",
+  "https://github.com/ADAMSKI-DZ/Laptop-Tester",
+];
+
+socialLinksMainBtns.forEach(function fun(value, index) {
+  value.addEventListener("click", () => {
+    shell.openExternal(mainSocialAll[index]);
+  });
+});
+
+const allAboutSocialBtns = document.querySelectorAll(".about-link");
+const aboutSocialAll = [
+  "https://www.instagram.com/malick_tammal",
+  "https://github.com/ADAMSKI-DZ",
+  "https://www.facebook.com/abdelmalek.tammal",
+  "https://codepen.io/ADAMSKIDZ",
+  "https://malicktammal.netlify.app/",
+];
+allAboutSocialBtns.forEach(function fun(value, index) {
+  value.addEventListener("click", () => {
+    shell.openExternal(aboutSocialAll[index]);
+  });
 });
