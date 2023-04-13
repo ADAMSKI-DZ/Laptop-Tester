@@ -32,12 +32,12 @@ nav.top-bar {
   app-region: none;
 }
 .logo img {
-  width: 2.5rem;
+  width: 2rem;
   -webkit-user-drag: none;
 }
 .logo h1 {
   font-family: "Poppins-Semibold";
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin-left: 0.7rem;
   user-select: none;
 }
@@ -366,7 +366,7 @@ td.part img {
 }
 .sys-info-loading img {
   mix-blend-mode: screen;
-  width: 10rem;
+  width: 10%;
   height: fit-content;
 }
 .system-shape-one {
@@ -538,7 +538,7 @@ td.part img {
 .bat-info-container .col-1 {
   width: 50%;
   height: 80%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -546,8 +546,8 @@ td.part img {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-.bat-info-container .col-1.hide {
-  display: none;
+.bat-info-container .col-1.show {
+  display: flex;
 }
 .bat-info-container table {
   width: 100%;
@@ -672,7 +672,21 @@ td.part img {
   background-color: var(--light-green);
   color: var(--white);
 }
-
+.bat-loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bat-loading img {
+  width: 10%;
+  mix-blend-mode: screen;
+}
+.bat-loading.hide {
+  display: none;
+}
 /*-------------------*/
 
 /*--- About-info-tab ---*/
@@ -1009,6 +1023,62 @@ td.part img {
 .update-downloaded .restart:hover {
   background-color: var(--light-green);
   color: var(--white);
+}
+.app-offline {
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.app-offline.active {
+  display: flex;
+}
+.offline-back-btn {
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.offline-back-btn img {
+  width: 60%;
+}
+.offline-back-btn:hover {
+  background: var(--more-dark-blue);
+}
+.update-error {
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.update-error.active {
+  display: flex;
+}
+.error-back-btn {
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.error-back-btn img {
+  width: 60%;
+}
+.error-back-btn:hover {
+  background: var(--more-dark-blue);
 }
 /*-------------------*/
 /*--------------------------------------------*/

@@ -1,7 +1,17 @@
 const updateStage = document.querySelectorAll(".update-stage");
 
-/* update system */
+/* Checking the app if it's online */
+const isOnline = () => {
+  if (navigator.onLine === true) {
+    ipc.send("app_is_online");
+  }
+  return navigator.onLine;
+};
+isOnline();
 
+/*----- update system -----*/
+
+/*--- Convert from bytes to sizes ["KB", "MB", "GB"] ---*/
 const bytesToSize = (bytes) => {
   const sizes = ["Bytes", "KB", "MB", "GB"];
   if (bytes === 0) {
@@ -14,6 +24,7 @@ const bytesToSize = (bytes) => {
   return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
 };
 
+/*--- Getting app version / from main process ---*/
 const appVersionText = document.querySelectorAll(".app-version span");
 
 ipc.on("app_version", (event, data) => {
@@ -22,6 +33,7 @@ ipc.on("app_version", (event, data) => {
   });
 });
 
+/*--- Adding back btn in update stages ---*/
 const UpdateBackBtn = document.querySelector(".back-btn");
 
 UpdateBackBtn.addEventListener("click", () => {
@@ -31,19 +43,28 @@ UpdateBackBtn.addEventListener("click", () => {
   updateStage[0].classList.add("active");
 });
 
+/*--- Checking for update by clicking btn ---*/
 const checkForUpdateBtn = document.querySelector(".check-for-update");
+const appOfflineUpdate = document.querySelector(".app-offline");
 
 checkForUpdateBtn.addEventListener("click", () => {
   console.log("checking for an update");
-
-  ipc.send("check_for_update");
 
   updateStage.forEach((stage) => {
     stage.classList.remove("active");
   });
   updateStage[1].classList.add("active");
+
+  /* Checking app online/offline before update */
+  if (isOnline() === true) {
+    ipc.send("check_for_update");
+  } else if (isOnline() === false) {
+    updateStage[1].classList.remove("active");
+    appOfflineUpdate.classList.add("active");
+  }
 });
 
+/*--- Update not available ---*/
 ipc.on("no_update_available", () => {
   console.log("you are updated");
 
@@ -53,6 +74,7 @@ ipc.on("no_update_available", () => {
   updateStage[2].classList.add("active");
 });
 
+/*--- Update available ---*/
 const updateVersionText = document.querySelector(".update-version span");
 const updateReleaseDate = document.querySelector(".update-release-date span");
 
@@ -76,6 +98,7 @@ ipc.on("update_available", (event, data) => {
   updateReleaseDate.innerText = `${data.releaseDate}`;
 });
 
+/*--- Download update when press btn ---*/
 const updateSizeText = document.querySelector(".update-size span");
 const downloadProgressCircle = document.querySelector(".download-progress");
 const downloadPercentText = document.querySelector(".download-percent");
@@ -87,6 +110,7 @@ downloadUpdateBtn.addEventListener("click", () => {
   ipc.send("download_update");
 });
 
+/*--- Download progress (download percent / download speed) ---*/
 ipc.on("download_progress", (event, data) => {
   updateStage.forEach((stage) => {
     stage.classList.remove("active");
@@ -106,6 +130,7 @@ ipc.on("download_progress", (event, data) => {
   );
 });
 
+/*--- Update Downloaded ---*/
 ipc.on("update_downloaded", () => {
   console.log("update downloaded");
 
@@ -126,8 +151,38 @@ ipc.on("update_downloaded", () => {
   updateStage[5].classList.add("active");
 });
 
+/*--- Restart btn to restart the app and install the update ---*/
 const restartBtn = document.querySelector(".restart");
 
 restartBtn.addEventListener("click", () => {
   ipc.send("restart_the_app");
+});
+
+/*--- Back btn in offline page ---*/
+const offlineBackBtn = document.querySelector(".offline-back-btn");
+offlineBackBtn.addEventListener("click", () => {
+  updateStage.forEach((stage) => {
+    stage.classList.remove("active");
+  });
+  updateStage[0].classList.add("active");
+});
+
+const errorText = document.querySelector(".error-text");
+const errorBackBtn = document.querySelector(".error-back-btn");
+errorBackBtn.addEventListener("click", () => {
+  updateStage.forEach((stage) => {
+    stage.classList.remove("active");
+  });
+  updateStage[0].classList.add("active");
+});
+
+/*--- Handling update error ---*/
+ipc.on("update_error", (event, data) => {
+  updateStage.forEach((stage) => {
+    stage.classList.remove("active");
+  });
+  updateStage[7].classList.add("active");
+  let updateError = data.error;
+  errorText.innerText = updateError;
+  console.log(updateError);
 });

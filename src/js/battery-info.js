@@ -1,4 +1,4 @@
-/*------ Getting battery info for checking i other PCs ------*/
+/*------ Getting battery info for checking other PCs ------*/
 si.battery()
   .then((data) => {
     console.log(`---------- battery data ----------`);
@@ -17,6 +17,7 @@ const battery = require("battery");
 const batInfoData = document.querySelectorAll(".bat-info-data span");
 const batCol1 = document.querySelector(".bat-info-container .col-1");
 const batCol2 = document.querySelector(".bat-info-container .col-2");
+const batLoading = document.querySelector(".bat-loading");
 
 const batChargeStat = document.querySelectorAll(".bat-charge-stat span");
 
@@ -38,9 +39,6 @@ const checkBatteryInfo = () => {
       if (data.currentCapacity === 0 && data.maxCapacity === 0) {
         console.log("pc not supported");
 
-        batCol2.classList.add("show");
-        batCol1.classList.add("hide");
-
         setInterval(() => {
           (async () => {
             const { level, charging } = await battery();
@@ -48,21 +46,34 @@ const checkBatteryInfo = () => {
             batChargeStat[1].innerText = `${level * 100}%`;
           })();
         }, 1000);
+
+        setTimeout(() => {
+          batLoading.classList.add("hide");
+          batCol2.classList.add("show");
+        }, 1500);
       } else {
         console.log("you pc is supported ");
-        batCol1.classList.add("show");
 
-        let health = `${(data.currentCapacity / data.maxCapacity) * 100}%`;
+        setInterval(() => {
+          (async () => {
+            const { level, charging } = await battery();
+            batInfoData[0].innerText = isCharging(charging);
+            batInfoData[1].innerText = `${level * 100}%`;
+          })();
+        }, 1000);
 
-        batInfoData[0].innerText = isCharging(data.isCharging);
-
-        batInfoData[1].innerText = `${data.percent}%`;
-
-        batInfoData[2].innerText = `${Math.floor(health)}%`;
+        batInfoData[2].innerText = `${Math.floor(
+          (data.currentCapacity / data.maxCapacity) * 100
+        )}%`;
 
         batInfoData[3].innerText = `${data.currentCapacity} ${data.capacityUnit}`;
 
         batInfoData[4].innerText = `${data.maxCapacity} ${data.capacityUnit}`;
+
+        setTimeout(() => {
+          batCol1.classList.add("show");
+          batLoading.classList.add("hide");
+        }, 1500);
       }
     })
     .catch((err) => {

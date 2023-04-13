@@ -33,7 +33,7 @@ const createMainWindow = () => {
     },
   });
   win.loadFile("./src/splash.html");
-  win.webContents.openDevTools({ mode: "detach" });
+  //win.webContents.openDevTools({ mode: "detach" });
 
   /*------ Sending app name and pc username and app version to renderer process ------*/
   win.webContents.on("did-finish-load", () => {
@@ -53,7 +53,9 @@ app.whenReady().then(() => {
   });
   setTimeout(() => {
     win.loadFile("./src/index.html");
-    autoUpdater.checkForUpdates();
+    ipc.on("app_is_online", () => {
+      autoUpdater.checkForUpdates();
+    });
   }, 1000);
   console.timeEnd("app_startup_time");
 });
@@ -139,10 +141,12 @@ ipc.on("generate_battery_info", () => {
 
 autoUpdater.autoDownload = false;
 
+/*--- Check for an update ---*/
 ipc.on("check_for_update", () => {
   autoUpdater.checkForUpdates();
 });
 
+/*--- Update available ---*/
 autoUpdater.on("update-available", (info) => {
   win.webContents.send("update_available", {
     updateVersion: info.releaseName,
@@ -150,10 +154,12 @@ autoUpdater.on("update-available", (info) => {
   });
 });
 
+/*--- Update not available ---*/
 autoUpdater.on("update-not-available", () => {
   win.webContents.send("no_update_available");
 });
 
+/*--- Download progress info ---*/
 autoUpdater.on("download-progress", (progressObj) => {
   win.webContents.send("download_progress", {
     percent: progressObj.percent,
@@ -162,14 +168,24 @@ autoUpdater.on("download-progress", (progressObj) => {
   });
 });
 
+/*--- Update downloaded---*/
 autoUpdater.on("update-downloaded", () => {
   win.webContents.send("update_downloaded");
 });
 
+/*--- Update get error ---*/
+autoUpdater.on("error", (message) => {
+  win.webContents.send("update_error", {
+    error: message.stack.substring(0, 143),
+  });
+});
+
+/*--- Download update when click btn ---*/
 ipc.on("download_update", () => {
   autoUpdater.downloadUpdate();
 });
 
+/*--- Restart the app when click btn ---*/
 ipc.on("restart_the_app", () => {
   autoUpdater.quitAndInstall(true, true);
 });
