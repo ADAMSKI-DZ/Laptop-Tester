@@ -10,7 +10,7 @@
     "deploy": "electron-builder build --win --publish always"
   },
   "author": "Malick Tammal",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^23.2.0",
     "electron-builder": "^24.1.2"
@@ -34,7 +34,10 @@
     "nsis": {
       "oneClick": false,
       "perMachine": true,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "license": "./custom/license.html",
+      "include": "./custom/installer.nsh",
+      "installerSidebar": "./custom/customHeader.bmp"
     }
   }
 }
