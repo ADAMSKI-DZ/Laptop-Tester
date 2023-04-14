@@ -11,6 +11,12 @@
   },
   "author": "Abdel Malek Tammal",
   "license": "MIT",
+  "keywords": [
+    "Application",
+    "Diagnosis",
+    "Laptop",
+    "Tool"
+  ],
   "devDependencies": {
     "electron": "^23.2.0",
     "electron-builder": "^24.1.2"
