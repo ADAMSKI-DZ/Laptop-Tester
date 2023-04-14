@@ -97,8 +97,6 @@ video2.addEventListener("click", () => {
   ipc.send("start_video2");
 });
 
-
-
 /*------ Open links in browser ------*/
 const socialLinksMainBtns = document.querySelectorAll(".social-link");
 const mainSocialAll = [
@@ -127,3 +125,4 @@ allAboutSocialBtns.forEach(function fun(value, index) {
     shell.openExternal(aboutSocialAll[index]);
   });
 });
+

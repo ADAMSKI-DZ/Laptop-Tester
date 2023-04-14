@@ -12,19 +12,17 @@ body {
   height: 100vh;
   color: var(--white);
   font-family: "Poppins-Regular";
+  user-select: none;
 }
 a {
   text-decoration: none;
   color: var(--white);
-  user-select: none;
   -webkit-user-drag: none;
 }
 svg {
-  user-select: none;
   -webkit-user-drag: none;
 }
 img {
-  user-select: none;
   -webkit-user-drag: none;
 }
 li {

@@ -33,6 +33,8 @@ const isCharging = (answer) => {
 };
 
 /*------ Showing battery infos ------*/
+const batMoreBtn = document.querySelector(".bat-show-more");
+
 const checkBatteryInfo = () => {
   si.battery()
     .then((data) => {
@@ -73,6 +75,7 @@ const checkBatteryInfo = () => {
         setTimeout(() => {
           batCol1.classList.add("show");
           batLoading.classList.add("hide");
+          batMoreBtn.classList.add("show");
         }, 1500);
       }
     })
@@ -80,6 +83,11 @@ const checkBatteryInfo = () => {
       batInfoData[0].innerText = err;
     });
 };
+
+batMoreBtn.addEventListener("click", () => {
+  batCol1.classList.toggle("show");
+  batCol2.classList.toggle("show");
+});
 
 /*------ Waiting click on battery tab then getting battery info // for performance ------*/
 links[3].addEventListener(

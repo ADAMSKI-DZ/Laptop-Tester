@@ -313,10 +313,10 @@ nav.top-bar {
 .system-container {
   width: 80%;
   height: 80%;
+  display: none;
 }
 .system-container.show {
-  opacity: 1;
-  visibility: visible;
+  display: unset;
 }
 .infos-table {
   width: 100%;
@@ -353,21 +353,17 @@ td.part img {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: var(--dark-blue);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-}
-.sys-info-loading.show {
-  opacity: 1;
-  visibility: visible;
 }
 .sys-info-loading img {
   mix-blend-mode: screen;
   width: 10%;
   height: fit-content;
+}
+.sys-info-loading.show {
+  display: flex;
 }
 .system-shape-one {
   transform: translate(30%, 30%);
@@ -686,6 +682,28 @@ td.part img {
 }
 .bat-loading.hide {
   display: none;
+}
+.bat-show-more {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  cursor: pointer;
+  display: none;
+}
+.bat-show-more.show {
+  display: unset;
+}
+.bat-show-more svg {
+  width: 100%;
+  height: 100%;
+}
+.bat-show-more svg path {
+  transition: all 300ms ease-in-out;
+}
+.bat-show-more:hover > svg path {
+  fill: var(--light-green);
 }
 /*-------------------*/
 

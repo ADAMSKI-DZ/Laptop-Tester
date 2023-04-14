@@ -1,7 +1,7 @@
 console.time("app_startup_time");
 
 /*------ Importing electron and some other things------*/
-const { app, BrowserWindow, ipcMain , shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const ipc = ipcMain;
 const os = require("os");
@@ -25,21 +25,34 @@ const createMainWindow = () => {
     frame: false,
     fullscreenable: true,
     title: appName,
-    show: true,
+    show: false,
     icon: path.join(__dirname, "./asset/photos/icon.ico"),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      devTools: false,
     },
   });
   win.loadFile("./src/splash.html");
   //win.webContents.openDevTools({ mode: "detach" });
-
+  win.once("ready-to-show", win.show);
   /*------ Sending app name and pc username and app version to renderer process ------*/
   win.webContents.on("did-finish-load", () => {
     win.webContents.send("app_name", { title: appName });
     win.webContents.send("user_name", { userName: os.userInfo().username });
     win.webContents.send("app_version", { appVersion: app.getVersion() });
+  });
+  /*------ Mem garbage collection ------*/
+  win.on("closed", () => {
+    win = null;
+  });
+  /*------ Disabling keyboard shortcuts ------*/
+  win.webContents.on("before-input-event", (event, input) => {
+    if (input.control && input.key.toLowerCase() === "r") {
+      event.preventDefault();
+    } else if (input.control && input.key.toLowerCase() === "w") {
+      event.preventDefault();
+    }
   });
 };
 
@@ -56,7 +69,7 @@ app.whenReady().then(() => {
     ipc.on("app_is_online", () => {
       autoUpdater.checkForUpdates();
     });
-  }, 1000);
+  }, 1500);
   console.timeEnd("app_startup_time");
 });
 
@@ -102,7 +115,11 @@ const createVideoWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      devTools: false,
     },
+  });
+  videoWindow.on("closed", () => {
+    videoWindow = null;
   });
 };
 
@@ -189,7 +206,3 @@ ipc.on("download_update", () => {
 ipc.on("restart_the_app", () => {
   autoUpdater.quitAndInstall(true, true);
 });
-
-
-
-
