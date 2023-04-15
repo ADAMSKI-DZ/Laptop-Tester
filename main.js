@@ -4,8 +4,6 @@ console.time("app_startup_time");
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const ipc = ipcMain;
-const os = require("os");
-const exec = require("child_process").exec;
 const { autoUpdater } = require("electron-updater");
 
 /*------ Optimizing tha app by v8 cache ------*/
@@ -13,9 +11,9 @@ require("v8-compile-cache");
 
 /*------ Defining window and app name ------*/
 const appName = "Laptop Tester";
+let win;
 
 /*------ Configuring window ------*/
-let win;
 
 const createMainWindow = () => {
   win = new BrowserWindow({
@@ -38,6 +36,8 @@ const createMainWindow = () => {
   win.once("ready-to-show", win.show);
   /*------ Sending app name and pc username and app version to renderer process ------*/
   win.webContents.on("did-finish-load", () => {
+    const os = require("os");
+
     win.webContents.send("app_name", { title: appName });
     win.webContents.send("user_name", { userName: os.userInfo().username });
     win.webContents.send("app_version", { appVersion: app.getVersion() });
@@ -118,6 +118,7 @@ const createVideoWindow = () => {
       devTools: false,
     },
   });
+  /*------ Mem garbage collection ------*/
   videoWindow.on("closed", () => {
     videoWindow = null;
   });
@@ -138,18 +139,23 @@ ipc.on("exit_video", () => {
   videoWindow.close();
 });
 
-let setDesktopDir = os.userInfo().homedir + "\\OneDrive\\Desktop";
-
-function execute(command, callback) {
-  exec(command, (error, stdout, stderr) => {
-    callback(stdout);
-  });
-}
+/*------ Generating battery report ------*/
 ipc.on("generate_battery_info", () => {
+  const exec = require("child_process").exec;
+
+  let setDesktopDir = os.userInfo().homedir + "\\Desktop";
+
+  function execute(command, callback) {
+    exec(command, (error, stdout, stderr) => {
+      callback(stdout);
+    });
+  }
+
   execute(
     `cd ${setDesktopDir} && powercfg /batteryreport && start battery-report.html`,
     (output) => {
       console.log(output);
+      console.log(setDesktopDir);
     }
   );
 });
