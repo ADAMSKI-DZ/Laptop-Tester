@@ -5,6 +5,7 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const ipc = ipcMain;
 const { autoUpdater } = require("electron-updater");
+const os = require("os");
 
 /*------ Optimizing tha app by v8 cache ------*/
 require("v8-compile-cache");
@@ -19,6 +20,8 @@ const createMainWindow = () => {
   win = new BrowserWindow({
     minWidth: 1000,
     minHeight: 600,
+    width: 1000,
+    height: 600,
     resizable: true,
     frame: false,
     fullscreenable: true,
@@ -36,8 +39,6 @@ const createMainWindow = () => {
   win.once("ready-to-show", win.show);
   /*------ Sending app name and pc username and app version to renderer process ------*/
   win.webContents.on("did-finish-load", () => {
-    const os = require("os");
-
     win.webContents.send("app_name", { title: appName });
     win.webContents.send("user_name", { userName: os.userInfo().username });
     win.webContents.send("app_version", { appVersion: app.getVersion() });

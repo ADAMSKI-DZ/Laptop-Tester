@@ -1,15 +1,3 @@
-/*------ Getting battery info for checking other PCs ------*/
-si.battery()
-  .then((data) => {
-    console.log(`---------- battery data ----------`);
-    console.table(data);
-    console.log(
-      "--------------------------------------------------------------------"
-    );
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 /*------ Importing battery npm package ------*/
 const battery = require("battery");
 
@@ -18,7 +6,6 @@ const batInfoData = document.querySelectorAll(".bat-info-data span");
 const batCol1 = document.querySelector(".bat-info-container .col-1");
 const batCol2 = document.querySelector(".bat-info-container .col-2");
 const batLoading = document.querySelector(".bat-loading");
-
 const batChargeStat = document.querySelectorAll(".bat-charge-stat span");
 
 /*------ function to change true to 'YES' / false to 'NO' ------*/
@@ -38,46 +25,29 @@ const batMoreBtn = document.querySelector(".bat-show-more");
 const checkBatteryInfo = () => {
   si.battery()
     .then((data) => {
-      if (data.currentCapacity === 0 && data.maxCapacity === 0) {
-        console.log("pc not supported");
+      setInterval(() => {
+        (async () => {
+          const { level, charging } = await battery();
+          batChargeStat[0].innerText = isCharging(charging);
+          batChargeStat[1].innerText = `${level * 100}%`;
+          batInfoData[0].innerText = isCharging(charging);
+          batInfoData[1].innerText = `${level * 100}%`;
+        })();
+      }, 1000);
 
-        setInterval(() => {
-          (async () => {
-            const { level, charging } = await battery();
-            batChargeStat[0].innerText = isCharging(charging);
-            batChargeStat[1].innerText = `${level * 100}%`;
-          })();
-        }, 1000);
+      setTimeout(() => {
+        batLoading.classList.add("hide");
+        batCol1.classList.add("show");
+        batMoreBtn.classList.add("show");
+      }, 1500);
 
-        setTimeout(() => {
-          batLoading.classList.add("hide");
-          batCol2.classList.add("show");
-        }, 1500);
-      } else {
-        console.log("you pc is supported ");
+      batInfoData[2].innerText = `${Math.floor(
+        (data.currentCapacity / data.maxCapacity) * 100
+      )}%`;
 
-        setInterval(() => {
-          (async () => {
-            const { level, charging } = await battery();
-            batInfoData[0].innerText = isCharging(charging);
-            batInfoData[1].innerText = `${level * 100}%`;
-          })();
-        }, 1000);
+      batInfoData[3].innerText = `${data.currentCapacity} ${data.capacityUnit}`;
 
-        batInfoData[2].innerText = `${Math.floor(
-          (data.currentCapacity / data.maxCapacity) * 100
-        )}%`;
-
-        batInfoData[3].innerText = `${data.currentCapacity} ${data.capacityUnit}`;
-
-        batInfoData[4].innerText = `${data.maxCapacity} ${data.capacityUnit}`;
-
-        setTimeout(() => {
-          batCol1.classList.add("show");
-          batLoading.classList.add("hide");
-          batMoreBtn.classList.add("show");
-        }, 1500);
-      }
+      batInfoData[4].innerText = `${data.maxCapacity} ${data.capacityUnit}`;
     })
     .catch((err) => {
       batInfoData[0].innerText = err;
@@ -115,7 +85,6 @@ const calculateBatteryHealth = () => {
   let health =
     (fullChargeCapacityInput.value / designCapacityInput.value) * 100;
   resultHealth.innerText = `${Math.floor(health)}%`;
-  console.log(health);
 };
 
 calculateBtn.addEventListener("click", () => {

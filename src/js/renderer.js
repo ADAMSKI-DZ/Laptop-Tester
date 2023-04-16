@@ -23,7 +23,6 @@ const navTitle = document.querySelector(".logo h1");
 ipc.on("app_name", (event, data) => {
   documentTitle.innerText = data.title;
   navTitle.innerText = data.title;
-  console.log(data.title);
 });
 
 /*------ Stoping app scaling in ------*/
@@ -83,7 +82,6 @@ logo.addEventListener("click", () => {
 const userNameHome = document.querySelector(".user-name");
 ipc.on("user_name", (event, data) => {
   userNameHome.innerText = data.userName;
-  console.log(data.userName);
 });
 
 /*------ Starting test on click / sending to main process ------*/
@@ -125,4 +123,3 @@ allAboutSocialBtns.forEach(function fun(value, index) {
     shell.openExternal(aboutSocialAll[index]);
   });
 });
-
